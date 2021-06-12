@@ -1,11 +1,24 @@
 import React from "react";
 
-const Mascota = (props) => {
+const Mascota = ({ nombre, animal, raza, imagenes, ubicacion, id }) => {
+  let imagen = "http://pets-images.dev-apis.com/pets/none.jpg";
+
+  if (imagenes.length) {
+    imagen = imagenes[0];
+  }
+
+
   return (
     <div>
-      <h1>{props.nombre}</h1>
-      <h2>{props.animal}</h2>
-      <h2>{props.raza}</h2>
+        <div className = "image-container">
+            <img className = "pet" src = {imagen} alt ={nombre}/>
+        </div>    
+        
+        <div className = "info">
+            <h1>{nombre}</h1>
+            <h2>{`${animal} - ${raza} - ${ubicacion}`}</h2>
+        </div>
+
     </div>
   );
 };

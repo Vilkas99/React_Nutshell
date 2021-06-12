@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Mascota from "./Mascota";
 import useRazaLista from "../hooks/useRazaLista";
+import Resultados from "./Resultados";
 
 const ANIMALES = ["bird", "cat", "dog", "rabbit", "reptile"];
 
@@ -81,14 +82,7 @@ const Busqueda = () => {
           </label>
         </form>
 
-        {mascotas.map((mascota) => (
-          <Mascota
-            nombre={mascota.name}
-            animal={mascota.animal}
-            raza={mascota.breed}
-            key={mascota.id}
-          />
-        ))}
+        <Resultados mascotas={mascotas} />
       </div>
     </div>
   );
