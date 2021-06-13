@@ -1,70 +1,105 @@
-# Getting Started with Create React App
+# Final
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Para los últimos detalles de la aplicación, vamos a añadir **más estados** a nuestro *componente de búsqueda*, y agregaremos **eventos**  de nuestro form para que al enviarlo obtengamos las mascotas en cuestión:
 
-## Available Scripts
+```javascript
+// Dentro de nuestro componente
+const [mascotas, setMascotas] = useState([]);
 
-In the project directory, you can run:
+// reemplazar form
+<form
+  onSubmit={e => {
+    e.preventDefault();
+	obtenerMascotas();
+  }}
+>
+```
 
-### `yarn start`
+## Composición de componentes
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Podemos notar que nuestro *componente de Busqueda* se está haciendo **excesivamente grande**; para ello, vamos a empezar a segmentarlo. 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Existen dos criterios para determinar cuando debemos separar un componente en pequeñas partes; **reusabilidad y organización.** 
 
-### `yarn test`
+Vamos a crear un nuevo componente llamado **Resultados.jsx**
+```javascript
+import Mascotas from "./Mascotas";
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+const Resultados = ({ mascotas }) => {
+  return (
+    <div className="search">
+      {!mascotas.length ? (
+        <h1>No se encontraron mascotas</h1>
+      ) : (
+        mascotas.map((mascota) => {
+          return (
+            <Mascota
+              animal={mascota.animal}
+              key={mascota.id}
+              nombre={mascota.name}
+              raza={mascota.breed}
+              imagenes={mascota.images}
+              ubicacion={`${mascota.city}, ${mascota.state}`}
+              id={pet.id}
+            />
+          );
+        })
+      )}
+    </div>
+  );
+};
 
-### `yarn build`
+export default Resultados;
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Ahora regresaremos a **Busqueda.jsx** para importarlo y colocarlo: 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```javascript
+// en la cima
+import Resultados from "./Resultados";
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+// debajo del </form>
+<Resultados mascotas={mascotas} />;
+```
 
-### `yarn eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Por último, vamos a retocar el *componente de Mascota.jsx*
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```javascript
+const Mascota = (props) => {
+  const { nombre, animal, raza, imagenes, ubicacion, id } = props;
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  let imagen = "http://pets-images.dev-apis.com/pets/none.jpg";
+  if (imagenes.length) {
+    imagen = imagenes[0];
+  }
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+  return (
+    <div className="pet">
+      <div className="image-container">
+        <img src={imagen} alt={nombre} />
+      </div>
+      <div className="info">
+        <h1>{nombre}</h1>
+        <h2>{`${animal} — ${raza} — ${ubicacion}`}</h2>
+      </div>
+    </div>
+  );
+};
 
-## Learn More
+export default Pet;
+```
+# ¡Felicidades!
+¡Ahora conocemos los fundamentos básicos de React para poder establecer aplicaciones web **dinámicas, reactivas y escalables**!
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+***¿Qué sigue después de aquí?***
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+ - [React Router](https://reactrouter.com/)
+ - [Contexto](https://reactrouter.com/)
+ - [Redux](https://react-redux.js.org/)
 
-### Code Splitting
+Espero que este tutorial te haya gustado; fue todo un placer volver a recordar los conceptos básicos de una herramienta tan poderosa como lo es **React**. 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+No olvides darle una ***estrellita*** al repo para que más personas lo encuentren <3 
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Keep coding!**
