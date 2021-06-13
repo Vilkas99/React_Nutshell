@@ -1,70 +1,229 @@
-# Getting Started with Create React App
+# Hooks
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Nota:** No olvides añadir a tu archivo local App.css el contenido de App.css del repositorio.
 
-## Available Scripts
+Ahora vamos a crear un ***componente*** que nos permitirá buscar animales en adopción, de acuerdo a la ubicación, tipo de animal y su respectiva raza. Para ello, vamos a crear el componente **Busqueda.jsx**
 
-In the project directory, you can run:
+```javascript
+const Busqueda = () => {
+  const ubicacion = "Seattle, WA";
+  return (
+    <div className="search-params">
+      <form>
+        <label htmlFor="ubicacion">
+			Ubicación
+          <input id="ubicacion" value={ubicacion} placeholder="Ubicación" />
+        </label>
+        <button>Enviar</button>
+      </form>
+    </div>
+  );
+};
 
-### `yarn start`
+export default Busqueda;
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+***¿Qué estamos haciendo aquí?***
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+ 1. Creamos un ***componente de React*** llamado *Busqueda*, el cual inicialmente configura una **variable** llamada "**ubicacion**" (En el apartado lógico del componente -**Su cerebro**- ), y que después nos regresa un *form* en donde coloca un *label* y un *input* relacionados con el **valor** de la variable ubicación.
+ 2. Posteriormente lo exportamos para hacer uso de él. 
+ 3. Nótese que para las clases de estilo, usamos ***className*** ya que la palabra *class* es una palabra reservada de JS (Mismo caso para HTML)
+ 
+Posteriormente vamos a importar *Busqueda* en *App* y vamos a **eliminar** todo su contenido para **colocar:** 
 
-### `yarn test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```javascript
+import { render } from "react-dom";
+import Busqueda from "./Busqueda"; //Esto cambió
 
-### `yarn build`
+const App = () => {
+  return (
+    <Busqueda/> <!--Esto cambió-->
+  );
+};
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+render(<App />, document.getElementById("root"));
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Ahora bien, si nos dirigimos al navegador tras ejecutar el comando **npm start**, notaremos que al escribir en el *input* nuestro texto no se verá reflejado; al contrario, la ubicación por default (**"Seattle, WA"**) no se podrá *ni eliminar.* 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+***¿Por qué sucede esto?*** 
 
-### `yarn eject`
+ - Cada vez que React detecta un **evento** en el *DOM*, piensa que algún valor nuestro ha cambiado, y tras ello, decide **renderizar** nuevamente nuestro código para después comparar entre ambas versiones, y con ello **actualizar** unicamente lo que se ha modificado. 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Ante ello, vamos a **actualizar** nuestro variable de **ubicacion**, haciendo uso de nuestro primer hook: ***setState***
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```javascript
+// En Busqueda.js
+import { useState } from "react";
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+// reemplazamos el valor original de ubicacion
+const [ubicacion, setUbicacion] = useState("Seattle, WA");
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+// reemplazamos el input
+<input
+  id="ubicacion"
+  value={ubicacion}
+  placeholder="Ubicacion"
+  onChange={(e) => setUbicacion(e.target.value)}
+/>;
+```
 
-## Learn More
+Este nos permite obtener una **variable** que apunta al valor del estado (**ubicacion**) y una **función** que le actualiza (**setUbicacion**) - Además, le asignamos un valor inicial dentro del paréntesis ("Seattle, WA"). 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Probablemente se preguntarán: ¿Por qué no asignamos el nuevo valor del target directamente a la variable de ubicación? o ¿por qué hacemos uso de setUbicacion para actualizarle? 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Pues bien, **he aquí las respuestas:** 
 
-### Code Splitting
+ - La función que nos brinda **setState** garantiza que al ejecutarla **SIEMPRE** se realice un **render** para poder **actualizar el contenido de la aplicación** (Aspecto que no se puede determinar cuando se asigna un nuevo valor a través del operador "=") 
+ 
+ - El **modificar** el estado es un proceso ***asíncrono***, por lo que es posible que otras partes del código estén modificando el valor del estado y finalicen unos antes que otros, ocasionando que al final estos procesos tengan referencias a estados antiguos que no reflejan todos los procesamientos que se realizaron. 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
+Ante ello, el hacer uso de "setState" convierte una variable en un estado.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**¿Cuandó queremos hacer eso?**
+Cuando una variable al ser modificada requiera un cambio en el DOM (Visual o estructural)
 
-### Making a Progressive Web App
+Pero...**¿Qué son los Hooks?** 
+Los hooks son "ganchos" que se atrapan siempre que un "renderizado" se ejecuta; estos ocurren siempre en el mismo orden y por ende apuntan a una fase del estado diferente.
+Nota: Nunca se colocan dentro de condicionales o ciclos. 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+UFFF, eso fue bastante información; sigamos programando.
 
-### Advanced Configuration
+Ahora vamos a crear un "dropdown" de animales dentro del componente: 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```javascript
+// debajo de imports
+const ANIMALES = ["bird", "cat", "dog", "rabbit", "reptile"];
 
-### Deployment
+// debajo de ubicacion
+const [animal, setAnimal] = useState("");
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+// debajo del label de ubicacion
+<label htmlFor="animal">
+  Animal
+  <select
+    id="animal"
+    value={animal}
+    onChange={(e) => setAnimal(e.target.value)}
+    onBlur={(e) => setAnimal(e.target.value)}
+  >
+    <option />
+    {ANIMALES.map((animal) => (
+      <option key={animal} value={animal}>
+        {animal}
+      </option>
+    ))}
+  </select>
+</label>;
+```
 
-### `yarn build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Ahora realizaremos un dropdown para la raza: 
+
+```javascript
+// debajo del último estado
+const [raza, setRaza] = useState("");
+const razas = [];
+
+// debajo del label para animal
+<label htmlFor="raza">
+	Raza
+  <select
+    disabled={!razas.length}
+    id="raza"
+    value={raza}
+    onChange={(e) => setRaza(e.target.value)}
+    onBlur={(e) => setRaza(e.target.value)}
+  >
+    <option />
+    {razas.map((raza) => (
+      <option key={raza} value={raza}>
+        {raza}
+      </option>
+    ))}
+  </select>
+</label>;
+```
+
+## Use Effect
+
+Ahora queremos que nuestra aplicación **inice con información ya almacenada** y lista para ser presentada; para ello utilizaremos una **API** que nos brindará información acerca de animales en adopción dentro de Estados Unidos. Para ello, haremos uso del Hook ***UseEffect***. 
+
+Este **hook** se ejecuta justo cuando nuestro componente es creado; es decir, casi al **inicio de nuestra aplicación** y antes de que el usuario pueda visualizar lo que se ha renderizado. En nuestro caso, vamos a realizar la llamada a nuestra API en este parte de la ejecución de nuestro programa. 
+
+Añadimos las siguientes líneas a nuestro archivo de **Busqueda.jsx**
+
+```javascript
+// añadir nuevo import
+import { useEffect, useState } from "react";
+import Mascota from "./Mascota";
+
+// Lo añadimos hasta arriba del componente
+const [mascotas, setMascotas] = useState([]);
+
+// Añadimos debajo de nuestra declaración de estados
+useEffect(() => {
+  obtenerMascotas();
+}, []); 
+
+async function obtenerMascotas() {
+  const res = await fetch(
+    `http://pets-v2.dev-apis.com/pets?animal=${animal}&location=${ubicacion}&breed=${raza}`
+  );
+  const json = await res.json();
+
+  setMascotas(json.pets);
+}
+
+// Debajo del final del form
+{
+  mascotas.map((mascota) => (
+    <Mascota nombre={mascota.name} animal={mascota.animal} raza={mascota.breed} key={mascota.id} />
+  ));
+}
+```
+
+
+***¿Qué estamos haciendo?***
+
+ - Creamos una **función asíncrona** para llamar a la **API** con los filtros seleccionados por el usuario **(animal, ubicacion y raza)** y en ella ***actualizamos el estado*** de mascotas.
+
+ - Llamamos a esa función en el hook ***UseEffect***, garantizando que este se ejecute **una sola vez al iniciar la aplicación** (Esto gracias a los **[]** que le añadimos como *segundo argumento*)
+ 
+ - Finalmente, **renderizamos** a todas las mascotas a través de la función ***map***, en donde a cada una le **instanciamos** un *componente de *Mascota** con sus respectivas *props*. 
+
+## Hooks personalizados
+
+Es momento que ahora realicemos nuestro propio Hook, el cual se encargará de generar una lista de razas de acuerdo al animal que se haya seleccionado. 
+
+Crearemos entonces un archivo llamado ***useListaRaza.js***
+
+```javascript
+import { useState, useEffect } from "react";
+
+const localCache = {};
+
+export default function useListaRaza(animal) {
+  const [razas, setListaRaza] = useState([]);
+  const [status, setStatus] = useState("sin cargar");
+
+  useEffect(() => {
+    if (!animal) {
+      setListaRaza([]);
+    } else if (localCache[animal]) {
+      setListaRaza(localCache[animal]);
+    } else {
+      obtenerRazas()
+    }
+
+    async function obtenerRazas() {
+      setListaRaza([]);
+      setStatus("cargando");
+      const res = await fetch(
+        `http://pets-v2.dev-apis.com/breeds?animal=${animal}`
+      );
+      const json = await res.json();
+      localCache[animal] = json.breeds || [];
+      setListaRaza(localCache[animal]);
