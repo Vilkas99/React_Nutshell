@@ -227,3 +227,27 @@ export default function useListaRaza(animal) {
       const json = await res.json();
       localCache[animal] = json.breeds || [];
       setListaRaza(localCache[animal]);
+      setStatus("finalizado");
+    }
+  }, [animal]);
+
+  return [razas, status];
+}
+```
+
+***¿Qué estamos haciendo?***
+
+ - Inicialmente creamos un cache que almacenará las razas de los animales en memoria, con la finalidad de no llamar innecesariamente a la API cuando un animal ya visto anteriormente se seleccione. 
+ - En nuestro hook, creamos  dos estado; uno para almacenar las razas obtenidas en la API y otro para conocer el estado de procesamiento de la misma. 
+ - Posteriormente, evaluamos en condicionales si se brindó un animal, si este se encuentra ya en el cache, o si en todo caso es un nuevo animal al cual le tenemos que obtener sus razas a través de la función "obtenerRazas" 
+ - En aquella función, llamamos a la API con el parametro del animal brindado, lo transformamos en json, lo almacenamos en el cache, y actualizamos su estado. 
+ - Finalmente, regresamos los estados en un arreglo. 
+
+Por último, añadimos el hook a nuestro archivo de Busqueda.jsx, y reemplazamos razas por nuestro hook: 
+
+```javascript
+import useListaRaza from "./useListaRaza";
+
+// reemplazar razas = []
+const [razas] = useListaRaza(animal);
+```
