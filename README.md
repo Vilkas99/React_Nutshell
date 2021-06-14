@@ -8,7 +8,7 @@ Este curso funciona y ha sido probado tanto en **macOS** como en **Windows 10**.
 
 # ¿Quién soy?
 
-¡Qué tal, viajerx del Internet! Soy **Víctor Mancera**, estudiante de Ingenieria en Tecnologías Computacionales y un apasionado por la filosofía, el arte, la tecnología y  **la combinación de estas**  para poder transformar al mundo. He trabajado con compañías de software como lo es **Intelimétrica** y **Analytics4Retail**, además de ser galardonado por la **Universidad de Stanford, Microsoft Student Amabassadors LATAM, Google Students Developers Club, entre otros,** por mi labor en el acto de crear software con causa social. 
+¡Qué tal, viajerx del Internet! Soy **Víctor Mancera**, estudiante de Ingenieria en Tecnologías Computacionales y un apasionado por la filosofía, el arte, la tecnología y  **la combinación de estas**  para poder transformar al mundo. He sido galardonado por la **Universidad de Stanford, Microsoft Student Amabassadors LATAM, Google Students Developers Club, entre otros,** por mi labor en el acto de crear software con causa social. 
 
 ![Victor Mancera](https://i.ibb.co/pzDVmGN/156608398-3719606524783457-4806181368299804823-n.jpg)
 
