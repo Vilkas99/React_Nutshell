@@ -23,7 +23,7 @@ Existen dos criterios para determinar cuando debemos separar un componente en pe
 
 Vamos a crear un nuevo componente llamado **Resultados.jsx**
 ```javascript
-import Mascotas from "./Mascotas";
+import Mascota from "./Mascota";
 
 const Resultados = ({ mascotas }) => {
   return (
@@ -40,7 +40,7 @@ const Resultados = ({ mascotas }) => {
               raza={mascota.breed}
               imagenes={mascota.images}
               ubicacion={`${mascota.city}, ${mascota.state}`}
-              id={pet.id}
+              id={mascota.id}
             />
           );
         })
@@ -87,7 +87,7 @@ const Mascota = (props) => {
   );
 };
 
-export default Pet;
+export default Mascota;
 ```
 # ¡Felicidades!
 ¡Ahora conocemos los fundamentos básicos de React para poder establecer aplicaciones web **dinámicas, reactivas y escalables**!
